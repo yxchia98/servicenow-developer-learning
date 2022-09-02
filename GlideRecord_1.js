@@ -47,13 +47,13 @@ newIncident.short_description =
 newIncidentSysId = newIncident.insert();
 gs.print(newIncidentSysId);
 
-// create multiple new instances
+// create multiple new incidents
 var newIncidents = [];
 var counter = 0;
 var incidentGR = new GlideRecord("incident");
 while (counter < 5) {
   incidentGR.newRecord();
-  incidentGR.short_description = "Incident #" + ++counter;
+  // incidentGR.short_description = "Incident #" + ++counter;
   newIncidents.push(incidentGR.insert());
 }
 gs.print(newIncidents);
@@ -61,6 +61,22 @@ newIncidents.map(function (incident) {
   incidentGR.get(incident);
   gs.print(incidentGR.number + " has a sys_id of:" + incidentGR.sys_id);
 });
+
+// update specific incident record's urgency
+var incidentGR = new GlideRecord("incident");
+incidentGR.get("number", "INC0000047");
+incidentGR.urgency = 3;
+incidentGR.update();
+
+// update all incidents with 2 urgency to 3 urgency
+var incidentGR = new GlideRecord("incident");
+incidentGR.addQuery("urgency", 2);
+incidentGR.query();
+while (incidentGR.next()) {
+  gs.print("Updating " + incidentGR.number + "'s urgency level to 3");
+  incidentGR.urgency = 3;
+  incidentGR.update();
+}
 
 // delete all previously created incident records
 var incidentGR = new GlideRecord("incident");
