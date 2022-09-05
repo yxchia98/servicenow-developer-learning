@@ -53,7 +53,7 @@ var counter = 0;
 var incidentGR = new GlideRecord("incident");
 while (counter < 5) {
   incidentGR.newRecord();
-  // incidentGR.short_description = "Incident #" + ++counter;
+  incidentGR.short_description = "Incident #" + ++counter;
   newIncidents.push(incidentGR.insert());
 }
 gs.print(newIncidents);
