@@ -1,0 +1,40 @@
+var fetchUtils = Class.create();
+fetchUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+  createDog: function () {
+    var dogName = this.getParameter("sysparm_dog_name");
+    var dogAge = this.getParameter("sysparm_dog_age");
+    var dogShots = this.getParameter("sysparm_dog_shots");
+    var dogNeutered = this.getParameter("sysparm_dog_neutered");
+
+    // insert dog using glide record
+    var newDog = new GlideRecord("x_885952_fetch_dogs");
+    newDog.newRecord();
+    newDog.name = dogName;
+    newDog.age = dogAge;
+    newDog.shots = dogShots ? true : false;
+    newDog.neutered = dogNeutered ? true : false;
+    var dogNumber = newDog.number.getDisplayValue();
+    var sysID = newDog.insert();
+    var dogLink = newDog.getLink();
+
+    // return values
+    var result = dogName + "|" + dogNumber + "|" + dogLink;
+    return result;
+  },
+  createEmailNotification: function () {
+    var adopterEmail = this.getParameter("sysparm_adopter_email");
+    var adoptionCenter = this.getParameter("sysparm_adoption_center");
+    var adoptionCenterEmail = "";
+    var ac = new GlideRecord("x_885952_fetch_adoption_center");
+    ac.get(adoptionCenter);
+    adoptionCenterEmail = ac.email.getDisplayValue();
+    gs.eventQueue(
+      "x_885952_fetch.adoption_email",
+      ac,
+      adoptionCenterEmail,
+      adopterEmail
+    );
+    return;
+  },
+  type: "fetchUtils",
+});
